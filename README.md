@@ -46,9 +46,23 @@ func main() {
 }
 ```
 
+## Currently Supported Providers:
+  * Pixiv
+  * IMDb
+  * Bcy
+  * AniDB
+  * Pawoo
+  * Seiga
+  * Sankaku
+  * Danbooru
+
 ## Documentation and Reference
 
 https://pkg.go.dev/github.com/jozsefsallai/gophersauce
+
+## Todo
+  * Add more providers
+  * Unit tests
 
 ## License
 

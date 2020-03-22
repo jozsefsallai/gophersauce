@@ -3,6 +3,7 @@ package gophersauce
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -40,7 +41,7 @@ func createFormFileWithContentType(w *multipart.Writer, fieldname, filename stri
 }
 
 func getRequestURL(c *Client) string {
-	u, _ := url.Parse("https://saucenao.com/search.php")
+	u, _ := url.Parse(c.APIUrl)
 	query, _ := url.ParseQuery(u.RawQuery)
 
 	if len(c.APIKey) > 0 {
@@ -153,4 +154,33 @@ func fetch(mode string, c *Client, options fetchOptions) (*SaucenaoResponse, err
 	}
 
 	return responseJSON, nil
+}
+
+func parseIntInterface(data interface{}) (int, error) {
+	switch data.(type) {
+	case string:
+		x, err := strconv.Atoi(data.(string))
+		if err != nil {
+			return -1, err
+		}
+
+		return x, nil
+
+	case int:
+		return data.(int), nil
+
+	default:
+		return -1, errors.New("failed to convert interface{} to integer")
+	}
+}
+
+func parseStringInterface(data interface{}) string {
+	switch data.(type) {
+	case string:
+		return data.(string)
+	case int:
+		return strconv.Itoa(data.(int))
+	default:
+		return ""
+	}
 }

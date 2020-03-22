@@ -9,12 +9,14 @@ import (
 type Client struct {
 	MaxResults int
 	APIKey     string
+	APIUrl     string
 }
 
 // Settings is a structure that contains the settings of the Gophersauce client
 type Settings struct {
 	MaxResults int
 	APIKey     string
+	APIUrl     string
 }
 
 // NewClient creates a new Gophersauce API client instance
@@ -33,8 +35,13 @@ func NewClient(settings *Settings) (*Client, error) {
 		return nil, errors.New("number of max results needs to be greater than 0")
 	}
 
+	if len(settings.APIUrl) == 0 {
+		settings.APIUrl = "https://saucenao.com/search.php"
+	}
+
 	client := &Client{
 		APIKey:     settings.APIKey,
+		APIUrl:     settings.APIUrl,
 		MaxResults: settings.MaxResults,
 	}
 
@@ -44,6 +51,11 @@ func NewClient(settings *Settings) (*Client, error) {
 // SetAPIKey updates the API key of the client
 func (c *Client) SetAPIKey(key string) {
 	c.APIKey = key
+}
+
+// SetAPIUrl updates the API URL of the client
+func (c *Client) SetAPIUrl(url string) {
+	c.APIUrl = url
 }
 
 // SetMaxResults updates the max results property of the client

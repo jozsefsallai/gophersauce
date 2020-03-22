@@ -40,33 +40,33 @@ type SearchResultHeader struct {
 // SearchResultData contains sources and additional information about the.
 // search result
 type SearchResultData struct {
-	ExternalURLs         []string `json:"ext_urls"`
-	Title                string   `json:"title,omitempty"`
-	PixivID              int      `json:"pixiv_id,omitempty"`
-	MemberName           string   `json:"member_name,omitempty"`
-	MemberID             int      `json:"member_id,omitempty"`
-	Source               string   `json:"source,omitempty"`
-	IMDbID               string   `json:"imdb_id,omitempty"`
-	Part                 string   `json:"part,omitempty"`
-	Year                 string   `json:"year,omitempty"`
-	EstimatedTime        string   `json:"est_time,omitempty"`
-	DeviantArtID         int      `json:"da_id,omitempty"`
-	AuthorName           string   `json:"author_name,omitempty"`
-	AuthorURL            string   `json:"author_url,omitempty"`
-	BcyID                int      `json:"bcy_id,omitempty"`
-	MemberLinkID         int      `json:"member_link_id,omitempty"`
-	BcyType              string   `json:"bcy_type,omitempty"`
-	AniDBAID             int      `json:"anidb_aid,omitempty"`
-	PawooID              int      `json:"pawoo_id,omitempty"`
-	PawooUserAccount     string   `json:"pawoo_user_acct,omitempty"`
-	PawooUserUsername    string   `json:"pawoo_user_username,omitempty"`
-	PawooUserDisplayName string   `json:"pawoo_user_display_name,omitempty"`
-	SeigaID              int      `json:"seiga_id,omitempty"`
-	SankakuID            int      `json:"sankaku_id,omitempty"`
-	Creator              string   `json:"creator,omitempty"`
-	Material             string   `json:"material,omitempty"`
-	Characters           string   `json:"characters,omitempty"`
-	DanbooruID           int      `json:"danbooru_id,omitempty"`
+	ExternalURLs         []string    `json:"ext_urls"`
+	Title                string      `json:"title,omitempty"`
+	PixivID              int         `json:"pixiv_id,omitempty"`
+	MemberName           string      `json:"member_name,omitempty"`
+	MemberID             int         `json:"member_id,omitempty"`
+	Source               string      `json:"source,omitempty"`
+	IMDbID               string      `json:"imdb_id,omitempty"`
+	Part                 string      `json:"part,omitempty"`
+	Year                 string      `json:"year,omitempty"`
+	EstimatedTime        string      `json:"est_time,omitempty"`
+	DeviantArtID         int         `json:"da_id,omitempty"`
+	AuthorName           string      `json:"author_name,omitempty"`
+	AuthorURL            string      `json:"author_url,omitempty"`
+	BcyID                int         `json:"bcy_id,omitempty"`
+	MemberLinkID         int         `json:"member_link_id,omitempty"`
+	BcyType              string      `json:"bcy_type,omitempty"`
+	AniDBAID             int         `json:"anidb_aid,omitempty"`
+	PawooID              int         `json:"pawoo_id,omitempty"`
+	PawooUserAccount     string      `json:"pawoo_user_acct,omitempty"`
+	PawooUserUsername    string      `json:"pawoo_user_username,omitempty"`
+	PawooUserDisplayName string      `json:"pawoo_user_display_name,omitempty"`
+	SeigaID              int         `json:"seiga_id,omitempty"`
+	SankakuID            int         `json:"sankaku_id,omitempty"`
+	Creator              interface{} `json:"creator,omitempty"`
+	Material             string      `json:"material,omitempty"`
+	Characters           string      `json:"characters,omitempty"`
+	DanbooruID           int         `json:"danbooru_id,omitempty"`
 }
 
 // SearchResult is an individual result similar to the requested image.
@@ -94,6 +94,16 @@ func (res *SaucenaoResponse) First() SearchResult {
 	}
 
 	return res.Results[0]
+}
+
+// GetUserID returns the ID of the user as an integer (0 if not logged in)
+func (res *SaucenaoResponse) GetUserID() (int, error) {
+	return parseIntInterface(res.Header.UserID)
+}
+
+// GetAccountType returns the account type of the user as an integer
+func (res *SaucenaoResponse) GetAccountType() (int, error) {
+	return parseIntInterface(res.Header.AccountType)
 }
 
 // IsPixiv returns true if the result is from Pixiv
@@ -139,4 +149,9 @@ func (result *SearchResult) IsSankaku() bool {
 // IsDanbooru returns true if the result is from Danbooru
 func (result *SearchResult) IsDanbooru() bool {
 	return result.Data.DanbooruID != 0
+}
+
+// GetCreatorString will return the creator of the resource as a string
+func (result *SearchResult) GetCreatorString() string {
+	return parseStringInterface(result.Data.Creator)
 }
